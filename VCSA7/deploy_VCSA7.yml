@@ -1,0 +1,49 @@
+---
+- hosts: localhost
+  name: deploy the VCSA to an ESXI Host
+  gather_facts: false
+  vars_files:
+    vcsa_vars.yml
+  tasks:
+  - vmware_deploy_ovf:
+      hostname: '{{ esxi_address }}'
+      username: '{{ esxi_username }}'
+      password: '{{esxi_password}}'
+      name: '{{ vcenter_hostname }}'
+      datastore: "datastore1"
+      disk_provisioning: "thin"
+      networks:
+        "vmnetwork": "VMNetwork"
+      ovf: '{{ vcsa_ova_file }}'
+      wait_for_ip_address: true
+      validate_certs: no
+      inject_ovf_env: true
+      properties:
+        DeploymentOption.value: '{{ vcsa_size}}'
+        guestinfo.cis.appliance.net.addr.family: 'ipv4'
+        guestinfo.cis.appliance.net.mode: 'static'
+        guestinfo.cis.appliance.net.addr: '{{ vcenter_address }}'
+        guestinfo.cis.appliance.net.pnid: "{{ vcenter_hostname }}.{{ domain }}"
+        guestinfo.cis.appliance.net.prefix: '{{ net_prefix }}'
+        guestinfo.cis.appliance.net.gateway: '{{ net_gateway }}'
+        guestinfo.cis.appliance.net.dns.servers: '{{ dns_servers }}'
+        guestinfo.cis.appliance.root.passwd: '{{ vcenter_password }}'
+        guestinfo.cis.appliance.ssh.enabled: "True"
+        guestinfo.cis.appliance.ntp.enabled: '{{ ntp_server1 }}'
+        guestinfo.cis.applaince.ceip_enabled: "False"
+        guestinfo.cis.deployment.autoconfig: 'True'
+        guestinfo.cis.vmdir.password: '{{ vcenter_password }}'
+        domain: '{{ domain}}'
+        searchpath: '{{ searchpath }}'
+      delegate_to: localhost
+    - name: wait for vcenter
+      vmware_about_facts:
+        hostname: '{{ vcenter_address }}'
+        username: 'administrator@vsphere.local'
+        password: '{{ vcenter_password }}'
+        validate_certs: no
+      delegate_to: localhost
+      retries: 20
+      delay: 30
+      register: result
+      until: result is succeeded
