@@ -1,0 +1,18 @@
+## ESXI VARIABLES ##
+esxi_username: 'root'
+esxi_address: '192.168.159.112'
+esxi_password: 'Passw0rd@1'
+vcenter_password: 'Passw0rd@1'
+vcenter_hostname: 'vcsa0701'
+datastore: 'VM-Local_Datastore-ESXI01-01'
+vcenter_address: '192.168.159.200'
+vcenter_username: 'administrator@vsphere.local'
+net_prefix: '24'
+net_gateway: '192.168.159.1'
+ntp_server1: '0.pool.ntp.org'
+ntp_server2: '1.pool.ntp.org'
+dns_servers: '192.168.159.7'
+domain: 'ibm.com'
+searchpath: "ibm.com"
+vcsa_size: 'tiny'
+vcsa_ova_file: '/dcc_vc07/vcsa/VMware-vCenter-Server-Appliance-7.0.3.00600-19717403_OVF10.ova'
